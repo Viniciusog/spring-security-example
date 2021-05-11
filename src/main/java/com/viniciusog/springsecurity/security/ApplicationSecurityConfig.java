@@ -57,12 +57,19 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         UserDetails annaSmithUser =  User.builder()
                 .username("annasmith")
                 .password(passwordEncoder.encode("password"))
-                .roles("STUDENT")
+                .roles(ApplicationUserRole.STUDENT.name()) //Pega os valores referentes ao ENUM 'STUDENT'
                 .build(); //ROLE_STUDENT
 
+        UserDetails lindaUser = User.builder()
+                .username("Linda")
+                .password(passwordEncoder.encode("password123"))
+                .roles(ApplicationUserRole.ADMIN.name()) //Pega os valores referentes ao ENUM 'ADMIN' //ROLE_ADMIN
+                .build();
+
         //Permitirar logar com esse usuário na página de login
-        return new InMemoryUserDetailsManager(
-                annaSmithUser
+        return new InMemoryUserDetailsManager (
+                annaSmithUser,
+                lindaUser
         );
     }
 }
