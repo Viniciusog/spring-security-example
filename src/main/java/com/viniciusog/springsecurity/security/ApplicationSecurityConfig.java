@@ -41,6 +41,8 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                //Ou seja, não precisará de login para acessar as páginas abaixo
                .antMatchers("/", "index", "/css/*", "/js/*")
                .permitAll()
+               //Apenas os usuários que tiverem perfil de estudante, poderão acessar o caminho '/api/**'
+               .antMatchers("/api/**").hasRole(ApplicationUserRole.STUDENT.name())
 
                //Autorizando qualquer request, desde que seja autenticado
                .anyRequest()
@@ -57,13 +59,16 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
         UserDetails annaSmithUser =  User.builder()
                 .username("annasmith")
                 .password(passwordEncoder.encode("password"))
-                .roles(ApplicationUserRole.STUDENT.name()) //Pega os valores referentes ao ENUM 'STUDENT'
+                .roles(ApplicationUserRole.STUDENT.name()) //Pega os valores referentes ao perfil 'STUDENT'
                 .build(); //ROLE_STUDENT
 
+
         UserDetails lindaUser = User.builder()
-                .username("Linda")
+                .username("linda")
                 .password(passwordEncoder.encode("password123"))
-                .roles(ApplicationUserRole.ADMIN.name()) //Pega os valores referentes ao ENUM 'ADMIN' //ROLE_ADMIN
+                //Podemos guardar o perfil do usuário, STUDENT ou ADMIN, no banco de dados, na FORMA DE STRING
+                //e depois passar para ENUM com ENUM.valueOf("STUDENT ou ADMIN")
+                .roles(ApplicationUserRole.ADMIN.name()) //Pega os valores referentes ao perfil 'ADMIN' //ROLE_ADMIN
                 .build();
 
         //Permitirar logar com esse usuário na página de login
