@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -17,6 +18,8 @@ import com.viniciusog.springsecurity.security.ApplicationUserPermission;
 
 @Configuration
 @EnableWebSecurity
+//Faz com que a configuração de acesso aos métodos do controller, via ROLE e permission, seja aceita
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     //Aqui é a nossa classe de configuração da segurança da aplicação Spring
 
@@ -56,15 +59,17 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                //Apenas os usuários que tiverem perfil de STUDENT, poderão acessar o caminho '/api/**'
                .antMatchers("/api/**").hasRole(ApplicationUserRole.STUDENT.name())
 
+               //TODO: A ordem que se coloca os antMatchers, IMPORTA! Pois ele passa um por um e caso o usuário logado não esteja de acordo com a verificação do antMatchers agora, será bloqueado
+
                //Apenas habilita o método de DELETE para o caminho a seguir, quem tiver permissão de COURSE_WRITE
                //Verifica se a role do nosso usuário, que estará acessando, possui a PERMISSION COURSE-WRITE
-               .antMatchers(HttpMethod.DELETE, "/management/api/v1/**").hasAuthority(ApplicationUserPermission.COURSE_WRITE.getPermission())
+               //.antMatchers(HttpMethod.DELETE, "/management/api/v1/**").hasAuthority(ApplicationUserPermission.COURSE_WRITE.getPermission())
                //Apenas habilita o método de POST para o caminho a seguir, quem tiver permissão de COURSE_WRITE (course:write)
-               .antMatchers(HttpMethod.POST, "/management/api/v1/**").hasAuthority(ApplicationUserPermission.COURSE_WRITE.getPermission())
+               //.antMatchers(HttpMethod.POST, "/management/api/v1/**").hasAuthority(ApplicationUserPermission.COURSE_WRITE.getPermission())
                //Apenas habilita o método de PUT para o caminho a seguir, quem tiver permissão String de COURSE_WRITE (course:write)
-               .antMatchers(HttpMethod.PUT, "/management/api/v1/**").hasAuthority(ApplicationUserPermission.COURSE_WRITE.getPermission())
+               //.antMatchers(HttpMethod.PUT, "/management/api/v1/**").hasAuthority(ApplicationUserPermission.COURSE_WRITE.getPermission())
                //Terão acesso ao método GET no caminho a seguir, quem tiver qualquer uma das ROLES, ADMIN ou ADMINTRAINEE
-               .antMatchers(HttpMethod.GET, "/management/api/v1/**").hasAnyRole(ApplicationUserRole.ADMIN.name(), ApplicationUserRole.ADMINTRAINEE.name())
+               //.antMatchers(HttpMethod.GET, "/management/api/v1/**").hasAnyRole(ApplicationUserRole.ADMIN.name(), ApplicationUserRole.ADMINTRAINEE.name())
 
 
                //Autorizando qualquer request, desde que seja autenticado
